@@ -1,2 +1,2 @@
 # ToDoListNodeJsReactJS
-ToDo on NodeJs and ReactJs
+ToDo on NodeJs(express) and ReactJs(ChakraUI)
