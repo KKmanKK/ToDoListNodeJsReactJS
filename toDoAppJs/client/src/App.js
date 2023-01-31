@@ -1,32 +1,43 @@
-import './App.css';
-import { Box, Container, HStack, Text } from '@chakra-ui/react'
+import "./App.css";
+import React from "react";
+import { Box, Container, HStack, Text } from "@chakra-ui/react";
 
-import { Authenticated } from './components/Authenticated';
+import axios from "axios";
+import { Authenticated } from "./components/Authenticated";
+import { useEffect, useState } from "react";
+import { ListHeader } from "./components/ListHeader";
+import { ListItem } from "./components/ListItem";
+
 function App() {
-  return (
-    <div className='App'>
-      <Container maxW="xl" centerContent>
-        <Box backgroundColor="Seashell" d="flex"
-          textAlign="center"
-          p={3}
-          w="50vw"
-          m="40px 0 15px 0"
-          borderRadius="lg">
-          <HStack d="flex" justifyContent="space-between">
-            <Text fontSize="20px">ToDoLists</Text>
-            <HStack>
-              <Box backgroundColor="white"
-                p={2}
-                borderRadius="10px"
-                cursor="pointer">Add New</Box>
+  const user_emai = "user_email";
+  const [task, setTask] = useState(null);
 
-              <Box backgroundColor="white"
-                p={2}
-                  borderRadius="10px"
-                cursor="pointer">SigUP</Box>
-            </HStack>
-          </HStack>
+  const getData = async () => {
+    try {
+      const todos = await axios.get(
+        `http://localhost:5000/api/todo/${user_emai}`
+      );
+      setTask(todos.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => getData, []);
+
+  const sortedTask = task?.sort(
+    (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+  );
+  console.log();
+  return (
+    <div className="App">
+      <Container maxW="xl" centerContent>
+        <ListHeader />
+        <Box borderRadius="lg" w="50vw" p={3} backgroundColor="Seashell">
+          {sortedTask?.map((t) => (
+            <ListItem key={t.id} task={t} />
+          ))}
         </Box>
+
         {/* <Authenticated /> */}
       </Container>
     </div>
