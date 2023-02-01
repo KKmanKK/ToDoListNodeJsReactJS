@@ -1,7 +1,12 @@
 import { Box, Container, HStack, Text } from "@chakra-ui/react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import { Modalcomponent } from "./Modal";
-export const ListHeader = () => {
+import { useDisclosure } from "@chakra-ui/react";
+export const ListHeader = ({ getData }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const showOpen = () => {
+    onClose();
+  };
   return (
     <Box
       backgroundColor="Seashell"
@@ -18,7 +23,22 @@ export const ListHeader = () => {
         </Text>
         <HStack>
           <ButtonGroup gap="2">
-            <Modalcomponent />
+            <Button
+              variant="outline"
+              colorScheme="teal"
+              size="sm"
+              onClick={onOpen}
+            >
+              Add New
+            </Button>
+
+            <Modalcomponent
+              mode={"create"}
+              isOpenn={isOpen}
+              showOpen={showOpen}
+              getData={getData}
+            />
+
             <Button colorScheme="teal" variant="outline" size="sm">
               SigUP
             </Button>

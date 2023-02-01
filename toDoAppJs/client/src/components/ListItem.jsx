@@ -3,8 +3,26 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import { Box, Container, HStack, Text } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
 import { IconButton } from "@chakra-ui/react";
-
-export const ListItem = ({ task }) => {
+import { useDisclosure } from "@chakra-ui/react";
+import { Modalcomponent } from "./Modal";
+import axios from "axios";
+export const ListItem = ({ task, getData }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const showOpen = () => {
+    onClose();
+  };
+  const deleteData = async () => {
+    try {
+      const res = await axios.delete(
+        `${process.env.SERVER_URL}/todo/${task.id}`
+      );
+      if (res.status === 200) {
+        getData();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <Box
       backgroundColor="white"
@@ -29,10 +47,18 @@ export const ListItem = ({ task }) => {
         </HStack>
         <HStack>
           <ButtonGroup gap="2">
-            <Button colorScheme="teal" size="sm">
+            <Button colorScheme="teal" size="sm" onClick={onOpen}>
               Edit
             </Button>
-            <Button colorScheme="teal" size="sm">
+
+            <Modalcomponent
+              mode={"edit"}
+              isOpenn={isOpen}
+              showOpen={showOpen}
+              task={task}
+              getData={getData}
+            />
+            <Button colorScheme="teal" size="sm" onClick={deleteData}>
               Delete
             </Button>
           </ButtonGroup>

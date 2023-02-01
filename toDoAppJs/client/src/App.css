@@ -1,5 +1,6 @@
+
 .App{
-background-color: rgba(160, 243, 211, 0.603);
   display: flex;
+  background-color: rgba(160, 243, 211, 0.603);
   height: 100vh;
 }

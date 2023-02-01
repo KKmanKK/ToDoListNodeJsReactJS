@@ -25,11 +25,11 @@ import {
 } from "@chakra-ui/react";
 import { Input } from "@chakra-ui/react";
 import { useState } from "react";
-export const Modalcomponent = () => {
+import axios from "axios";
+import { useEffect } from "react";
+export const Modalcomponent = ({ mode, isOpenn, showOpen, task, getData }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const finalRef = React.useRef(null);
-
-  const [sliderValue, setSliderValue] = useState(1);
 
   const labelStyles = {
     mt: "2",
@@ -37,12 +37,64 @@ export const Modalcomponent = () => {
     fontSize: "sm",
   };
 
+  const editMode = mode === "edit" ? true : false;
+  const [data, setData] = useState({
+    user_email: editMode ? task.user_email : "todo@Test.ru",
+    title: editMode ? task.title : "",
+    prohress: editMode ? task.prohress : 0,
+  });
+  const changeHendlerInput = (e) => {
+    setData((prev) => {
+      return {
+        ...prev,
+        title: e.target.value,
+      };
+    });
+  };
+  const changeHendlerSlider = (e) => {
+    setData((prev) => {
+      return {
+        ...prev,
+        prohress: e,
+      };
+    });
+  };
+  useEffect(() => {
+    console.log(data.prohress);
+  }, [data.prohress]);
+  const createTask = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(`${process.env.SERVER_URL}/todo`, data);
+
+      if (res.status === 200) {
+        showOpen();
+        getData();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const updataTask = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.put(`${process.env.SERVER_URL}/todo`, {
+        id: task.id,
+        title: data.title,
+        prohress: data.prohress,
+      });
+
+      if (res.status === 200) {
+        showOpen();
+        getData();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <>
-      <Button variant="outline" colorScheme="teal" size="sm" onClick={onOpen}>
-        Add New
-      </Button>
-      <Modal finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
+      <Modal finalFocusRef={finalRef} isOpen={isOpenn} onClose={showOpen}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Modal Title</ModalHeader>
@@ -51,13 +103,17 @@ export const Modalcomponent = () => {
             <FormControl isRequired>
               <FormLabel>Task Title</FormLabel>
 
-              <Input placeholder="Task Title" />
+              <Input
+                placeholder="Task Title"
+                value={data.title}
+                onChange={changeHendlerInput}
+              />
 
               <Slider
                 mt="6vh"
-                defaultValue={sliderValue}
+                value={data.prohress}
                 aria-label="slider-ex-6"
-                onChange={(val) => setSliderValue(val)}
+                onChange={changeHendlerSlider}
               >
                 <SliderMark value={25} {...labelStyles}>
                   25%
@@ -69,7 +125,7 @@ export const Modalcomponent = () => {
                   75%
                 </SliderMark>
                 <SliderMark
-                  value={sliderValue}
+                  value={data.prohress}
                   textAlign="center"
                   bg="blue.500"
                   color="white"
@@ -77,7 +133,7 @@ export const Modalcomponent = () => {
                   ml="-5"
                   w="12"
                 >
-                  {sliderValue}%
+                  {data.prohress}%
                 </SliderMark>
                 <SliderTrack>
                   <SliderFilledTrack />
@@ -88,16 +144,16 @@ export const Modalcomponent = () => {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
             <Button
-              variant="outline"
               colorScheme="teal"
               size="sm"
-              onClick={onClose}
+              mr={3}
+              onClick={editMode ? updataTask : createTask}
             >
-              Add New
+              {editMode ? "Edit" : "Add New"}
+            </Button>
+            <Button colorScheme="teal" size="sm" onClick={showOpen}>
+              Close
             </Button>
           </ModalFooter>
         </ModalContent>

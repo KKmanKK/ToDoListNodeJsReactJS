@@ -9,7 +9,7 @@ import { ListHeader } from "./components/ListHeader";
 import { ListItem } from "./components/ListItem";
 
 function App() {
-  const user_emai = "user_email";
+  const user_emai = "todo@Test.ru";
   const [task, setTask] = useState(null);
 
   const getData = async () => {
@@ -31,10 +31,10 @@ function App() {
   return (
     <div className="App">
       <Container maxW="xl" centerContent>
-        <ListHeader />
+        <ListHeader getData={getData} />
         <Box borderRadius="lg" w="50vw" p={3} backgroundColor="Seashell">
           {sortedTask?.map((t) => (
-            <ListItem key={t.id} task={t} />
+            <ListItem key={t.id} task={t} getData={getData} />
           ))}
         </Box>
 
