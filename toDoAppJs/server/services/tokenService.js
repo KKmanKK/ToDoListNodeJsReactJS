@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { Token } from "../models";
+import { Token } from "../models.js";
 dotenv.config();
 class TokenService {
   generateToken(payload) {
     const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET_KEY, {
-      expiresIn: "15h",
+      expiresIn: "15m",
     });
     const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET_KEY, {
       expiresIn: "30d",
@@ -24,7 +24,35 @@ class TokenService {
     const token = await Token.create({ refreshToken, userId });
   }
   async removeToken(refreshToken) {
-    const tokenData = await Token.destroy({ where: refreshToken });
+    const tokenData = await Token.destroy({ where: { refreshToken } });
+    return tokenData;
+  }
+
+  accessTokenValidation(accessToken) {
+    try {
+      const tokenData = jwt.verify(accessToken, process.env.ACCESS_SECRET_KEY);
+      return tokenData;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  refreshTokenValidation(refreshToken) {
+    try {
+      const tokenData = jwt.verify(
+        refreshToken,
+        process.env.REFRESH_SECRET_KEY
+      );
+      return tokenData;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  async findToken(refreshToken) {
+    const tokenData = await Token.findOne({ where: { refreshToken } });
+    if (!tokenData) {
+      return null;
+    }
     return tokenData;
   }
 }

@@ -3,10 +3,10 @@ import React from "react";
 import { Box, Container, HStack, Text } from "@chakra-ui/react";
 
 import axios from "axios";
-import { Authenticated } from "./components/Authenticated";
 import { useEffect, useState } from "react";
 import { ListHeader } from "./components/ListHeader";
 import { ListItem } from "./components/ListItem";
+import { TodoService } from "./services/TodoService";
 
 function App() {
   const user_emai = "todo@Test.ru";
@@ -14,9 +14,7 @@ function App() {
 
   const getData = async () => {
     try {
-      const todos = await axios.get(
-        `http://localhost:5000/api/todo/${user_emai}`
-      );
+      const todos = await TodoService.showTodos(user_emai);
       setTask(todos.data);
     } catch (e) {
       console.log(e);
@@ -37,8 +35,6 @@ function App() {
             <ListItem key={t.id} task={t} getData={getData} />
           ))}
         </Box>
-
-        {/* <Authenticated /> */}
       </Container>
     </div>
   );

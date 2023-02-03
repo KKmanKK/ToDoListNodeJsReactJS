@@ -1,4 +1,4 @@
-class UserDTO {
+export class UserDTO {
   id;
   email;
   constructor(model) {
