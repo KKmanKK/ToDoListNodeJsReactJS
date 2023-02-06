@@ -19,7 +19,7 @@ class TokenService {
     const tokenData = await Token.findOne({ where: userId });
     if (tokenData) {
       tokenData.refreshToken = refreshToken;
-      await tokenData.save();
+      return await tokenData.save();
     }
     const token = await Token.create({ refreshToken, userId });
   }

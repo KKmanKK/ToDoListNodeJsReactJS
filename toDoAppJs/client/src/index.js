@@ -1,15 +1,21 @@
-import { ChakraProvider } from '@chakra-ui/react';
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { ChakraProvider } from "@chakra-ui/react";
+import React, { createContext } from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { TodoStore } from "./store/TodoStore";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+export const Context = createContext({
+  TodoStore,
+});
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ChakraProvider>
-
-    <App />
+      <Context.Provider value={{ TodoStore }}>
+        <App />
+      </Context.Provider>
     </ChakraProvider>
   </React.StrictMode>
 );

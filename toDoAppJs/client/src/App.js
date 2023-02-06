@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { ListHeader } from "./components/ListHeader";
 import { ListItem } from "./components/ListItem";
 import { TodoService } from "./services/TodoService";
+import { Authenticated } from "./components/Authenticated";
 
 function App() {
   const user_emai = "todo@Test.ru";
@@ -29,12 +30,13 @@ function App() {
   return (
     <div className="App">
       <Container maxW="xl" centerContent>
-        <ListHeader getData={getData} />
+        {/* <ListHeader getData={getData} />
         <Box borderRadius="lg" w="50vw" p={3} backgroundColor="Seashell">
           {sortedTask?.map((t) => (
             <ListItem key={t.id} task={t} getData={getData} />
           ))}
-        </Box>
+        </Box> */}
+        <Authenticated />
       </Container>
     </div>
   );
