@@ -9,11 +9,12 @@ export const authMiddleware = (req, res, next) => {
     if (!accessToken) {
       throw new Error("Пользователь не автаризован");
     }
-    const tokenData = tokenService.accessTokenValidation(accessToken);
-    if (!tokenData) {
+    const userData = tokenService.accessTokenValidation(accessToken);
+
+    if (!userData) {
       throw new Error("Пользователь не автаризован");
     }
-    res.user = tokenData;
+    req.user = userData;
     next();
   } catch (e) {
     console.log(e);

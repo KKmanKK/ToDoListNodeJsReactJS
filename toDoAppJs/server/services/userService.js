@@ -48,13 +48,13 @@ class UserService {
     if (!refreshToken) {
       throw new Error("Пользовательн не зарегестрирован");
     }
-    const tokenData = tokenService.refreshTokenValidation(refreshToken);
+    const userData = tokenService.refreshTokenValidation(refreshToken);
     const tokenInBd = await tokenService.findToken(refreshToken);
 
-    if (!tokenData || !tokenInBd) {
+    if (!userData || !tokenInBd) {
       throw new Error("Пользовательн не зарегестрирован");
     }
-    const user = await User.findOne({ where: { userId: tokenInBd.id } });
+    const user = await User.findOne({ where: { userId: userData.id } });
     const userDto = new UserDTO(user);
     const tokens = tokenService.generateToken({ ...userDto });
     await tokenService.saveToken(tokens.refreshToken, userDto.id);

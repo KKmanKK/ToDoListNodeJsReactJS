@@ -7,6 +7,8 @@ class TokenService {
     const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET_KEY, {
       expiresIn: "15m",
     });
+    const tokenData = jwt.verify(accessToken, process.env.ACCESS_SECRET_KEY);
+
     const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET_KEY, {
       expiresIn: "30d",
     });
@@ -16,10 +18,10 @@ class TokenService {
     };
   }
   async saveToken(refreshToken, userId) {
-    const tokenData = await Token.findOne({ where: userId });
+    const tokenData = await Token.findOne({ where: { userId } });
     if (tokenData) {
       tokenData.refreshToken = refreshToken;
-      return await tokenData.save();
+      return tokenData.save();
     }
     const token = await Token.create({ refreshToken, userId });
   }
@@ -31,9 +33,10 @@ class TokenService {
   accessTokenValidation(accessToken) {
     try {
       const tokenData = jwt.verify(accessToken, process.env.ACCESS_SECRET_KEY);
+
       return tokenData;
     } catch (e) {
-      console.log(e);
+      return null;
     }
   }
 
@@ -45,7 +48,7 @@ class TokenService {
       );
       return tokenData;
     } catch (e) {
-      console.log(e);
+      return null;
     }
   }
   async findToken(refreshToken) {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Input,
   InputGroup,
@@ -16,9 +16,12 @@ import {
   FormHelperText,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { Context } from "..";
 
 export const Login = () => {
   const [show, setShow] = useState(false);
+  const [password, setPassword] = useState(null);
+  const { userStore } = useContext(Context);
   return (
     <>
       <VStack>
@@ -31,6 +34,8 @@ export const Login = () => {
           <FormLabel>Пароль</FormLabel>
           <InputGroup>
             <Input
+              value={password}
+              onChange={(e) => setPassword(e.currentTarget.value)}
               placeholder="Введите пароль"
               type={show ? "text" : "password"}
             ></Input>

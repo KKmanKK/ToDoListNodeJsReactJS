@@ -4,16 +4,20 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { TodoStore } from "./store/TodoStore";
+import { UserStore } from "./store/userStore";
 
+const todoStore = new TodoStore();
+const userStore = new UserStore();
 export const Context = createContext({
-  TodoStore,
+  todoStore,
+  userStore,
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ChakraProvider>
-      <Context.Provider value={{ TodoStore }}>
+      <Context.Provider value={{ todoStore, userStore }}>
         <App />
       </Context.Provider>
     </ChakraProvider>
