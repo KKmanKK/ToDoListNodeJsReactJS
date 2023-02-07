@@ -8,7 +8,7 @@ export class TodoService {
     return $api.put("/todo", { id, title, prohress });
   }
   static async deleteTodo(id) {
-    return $api.delete("/todo", { id });
+    return $api.delete(`/todo/${id}`);
   }
   static async showTodos(user_emai) {
     return $api.get(`/todo/${user_emai}`);

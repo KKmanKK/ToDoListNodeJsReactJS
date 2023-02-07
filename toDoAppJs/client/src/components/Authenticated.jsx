@@ -1,6 +1,6 @@
 import { Box, Tabs, Tab, TabList, TabPanels, TabPanel } from "@chakra-ui/react";
 import { Login } from "./Login";
-import SingUp from "./SingUp";
+import { SingUp } from "./SingUp";
 export const Authenticated = () => {
   return (
     <>

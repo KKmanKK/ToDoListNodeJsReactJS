@@ -16,17 +16,32 @@ import {
   FormHelperText,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { useContext } from "react";
+import { Context } from "..";
+import { observer } from "mobx-react-lite";
 
-export default function SingUp() {
+export const SingUp = observer(() => {
   const [showPas, setShowPas] = useState(false);
   const [showPasConfirm, setShowPasConfirm] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const { userStore } = useContext(Context);
 
+  const submitRegFrom = () => {
+    userStore.registration(email, password);
+  };
   return (
     <>
       <VStack>
         <FormControl isRequired>
           <FormLabel>Почта</FormLabel>
-          <Input placeholder="email" type="email" />
+          <Input
+            placeholder="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </FormControl>
 
         <FormControl id="pass" isRequired>
@@ -35,6 +50,8 @@ export default function SingUp() {
             <Input
               placeholder="Введите пароль"
               type={showPas ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             ></Input>
             <InputRightElement w="4.5rem">
               <IconButton
@@ -55,6 +72,8 @@ export default function SingUp() {
             <Input
               placeholder="Введите пароль"
               type={showPasConfirm ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             ></Input>
             <InputRightElement w="4.5rem">
               <IconButton
@@ -69,10 +88,16 @@ export default function SingUp() {
             </InputRightElement>
           </InputGroup>
         </FormControl>
-        <Button h="1.7em" m="20px 0 0 0" colorScheme="teal" size="lg">
+        <Button
+          h="1.7em"
+          m="20px 0 0 0"
+          colorScheme="teal"
+          size="lg"
+          onClick={submitRegFrom}
+        >
           Регистрация
         </Button>
       </VStack>
     </>
   );
-}
+});

@@ -6,16 +6,17 @@ import { IconButton } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import { Modalcomponent } from "./Modal";
 import axios from "axios";
+import { useContext } from "react";
+import { Context } from "..";
 export const ListItem = ({ task, getData }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const showOpen = () => {
     onClose();
   };
+  const { todoStore } = useContext(Context);
   const deleteData = async () => {
     try {
-      const res = await axios.delete(
-        `${process.env.SERVER_URL}/todo/${task.id}`
-      );
+      const res = await todoStore.delete(task.id);
       if (res.status === 200) {
         getData();
       }
@@ -34,7 +35,7 @@ export const ListItem = ({ task, getData }) => {
       borderRadius="lg"
       boxShadow="base"
     >
-      <HStack d="flex" justifyContent="space-between">
+      <HStack w="100px" d="flex" justifyContent="space-between">
         <HStack spacing={4}>
           <IconButton
             colorScheme="teal"
@@ -43,7 +44,9 @@ export const ListItem = ({ task, getData }) => {
             icon={<CheckIcon />}
           />
           {/* <CheckIcon cursor="pointer" /> */}
-          <Text fontSize="20px">{task.title}</Text>
+          <Text w="40vw" textAlign="start" fontSize="20px">
+            {task.title}
+          </Text>
         </HStack>
         <HStack>
           <ButtonGroup gap="2">

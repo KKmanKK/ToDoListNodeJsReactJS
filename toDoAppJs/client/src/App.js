@@ -1,45 +1,61 @@
 import "./App.css";
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Container, HStack, Text } from "@chakra-ui/react";
 
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ListHeader } from "./components/ListHeader";
 import { ListItem } from "./components/ListItem";
-import { TodoService } from "./services/TodoService";
 import { Authenticated } from "./components/Authenticated";
+import { Context } from ".";
+import { observer } from "mobx-react-lite";
+import { toJS } from "mobx";
 
 function App() {
-  const user_emai = "todo@Test.ru";
-  const [task, setTask] = useState(null);
+  const { userStore, todoStore } = useContext(Context);
+  const [task, setTask] = useState();
 
   const getData = async () => {
     try {
-      const todos = await TodoService.showTodos(user_emai);
-      setTask(todos.data);
+      await todoStore.show(toJS(userStore.user?.user?.email));
+      setTask(toJS(todoStore.todo.data));
     } catch (e) {
       console.log(e);
     }
   };
-  useEffect(() => getData, []);
+  useEffect(() => {
+    getData();
+  }, [userStore.isAuth]);
 
   const sortedTask = task?.sort(
     (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
   );
-  console.log();
+
+  if (!userStore.isAuth) {
+    return (
+      <div className="App">
+        <Container maxW="xl" centerContent>
+          <Authenticated />
+        </Container>
+      </div>
+    );
+  }
+
+  if (userStore.isAuth) {
+  }
+
   return (
     <div className="App">
       <Container maxW="xl" centerContent>
-        {/* <ListHeader getData={getData} />
+        <ListHeader getData={getData} user_email={userStore.user.user.email} />
         <Box borderRadius="lg" w="50vw" p={3} backgroundColor="Seashell">
           {sortedTask?.map((t) => (
             <ListItem key={t.id} task={t} getData={getData} />
           ))}
-        </Box> */}
-        <Authenticated />
+        </Box>
       </Container>
     </div>
   );
 }
 
-export default App;
+export default observer(App);

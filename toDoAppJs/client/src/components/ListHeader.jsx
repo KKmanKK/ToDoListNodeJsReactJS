@@ -2,11 +2,14 @@ import { Box, Container, HStack, Text } from "@chakra-ui/react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import { Modalcomponent } from "./Modal";
 import { useDisclosure } from "@chakra-ui/react";
-export const ListHeader = ({ getData }) => {
+import { useContext } from "react";
+import { Context } from "..";
+export const ListHeader = ({ getData, user_email }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const showOpen = () => {
     onClose();
   };
+  const { userStore } = useContext(Context);
   return (
     <Box
       backgroundColor="Seashell"
@@ -18,9 +21,17 @@ export const ListHeader = ({ getData }) => {
       borderRadius="lg"
     >
       <HStack d="flex" justifyContent="space-between">
-        <Text color="teal" fontWeight="normal" fontSize="20px">
-          ToDoLists
-        </Text>
+        <HStack d="flex" justifyContent="space-between">
+          <Text color="teal" fontWeight="normal" fontSize="20px">
+            ToDoLists
+          </Text>
+          <Text color="teal" fontWeight="bold" fontSize="20px">
+            Email:
+          </Text>
+          <Text color="#6B46C1" fontWeight="normal" fontSize="20px">
+            {` ${user_email}`}
+          </Text>
+        </HStack>
         <HStack>
           <ButtonGroup gap="2">
             <Button
@@ -39,8 +50,13 @@ export const ListHeader = ({ getData }) => {
               getData={getData}
             />
 
-            <Button colorScheme="teal" variant="outline" size="sm">
-              SigUP
+            <Button
+              colorScheme="teal"
+              variant="outline"
+              size="sm"
+              onClick={() => userStore.logout()}
+            >
+              Logout
             </Button>
           </ButtonGroup>
         </HStack>

@@ -7,30 +7,25 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-} from "@chakra-ui/react";
-import { useDisclosure } from "@chakra-ui/react";
-import { Button, ButtonGroup } from "@chakra-ui/react";
-import {
+  Input,
+  useDisclosure,
+  Button,
+  ButtonGroup,
   FormControl,
   FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-} from "@chakra-ui/react";
-import {
   Slider,
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
   SliderMark,
 } from "@chakra-ui/react";
-import { Input } from "@chakra-ui/react";
-import { useState } from "react";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { Context } from "..";
 export const Modalcomponent = ({ mode, isOpenn, showOpen, task, getData }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const finalRef = React.useRef(null);
-
+  const { todoStore, userStore } = useContext(Context);
   const labelStyles = {
     mt: "2",
     ml: "-2.5",
@@ -38,11 +33,13 @@ export const Modalcomponent = ({ mode, isOpenn, showOpen, task, getData }) => {
   };
 
   const editMode = mode === "edit" ? true : false;
+
   const [data, setData] = useState({
-    user_email: editMode ? task.user_email : "todo@Test.ru",
-    title: editMode ? task.title : "",
-    prohress: editMode ? task.prohress : 0,
+    user_email: userStore.user.user.email ?? "TestTodo@mail.ru",
+    title: editMode == true ? task.title : "",
+    prohress: editMode == true ? task.prohress : 0,
   });
+
   const changeHendlerInput = (e) => {
     setData((prev) => {
       return {
@@ -59,15 +56,22 @@ export const Modalcomponent = ({ mode, isOpenn, showOpen, task, getData }) => {
       };
     });
   };
-  useEffect(() => {
-    console.log(data.prohress);
-  }, [data.prohress]);
+
   const createTask = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${process.env.SERVER_URL}/todo`, data);
+      const res = await todoStore.create(
+        data.user_email,
+        data.title,
+        data.prohress
+      );
 
       if (res.status === 200) {
+        setData({
+          user_email: userStore.user.user.email,
+          title: "",
+          prohress: 0,
+        });
         showOpen();
         getData();
       }
@@ -78,11 +82,7 @@ export const Modalcomponent = ({ mode, isOpenn, showOpen, task, getData }) => {
   const updataTask = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put(`${process.env.SERVER_URL}/todo`, {
-        id: task.id,
-        title: data.title,
-        prohress: data.prohress,
-      });
+      const res = await todoStore.update(task.id, data.title, data.prohress);
 
       if (res.status === 200) {
         showOpen();

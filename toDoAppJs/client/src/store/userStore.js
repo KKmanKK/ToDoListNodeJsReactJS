@@ -1,12 +1,12 @@
-import { makeAutoObservable, set } from "mobx";
+import { makeAutoObservable, set, toJS } from "mobx";
 import { AuthService } from "../services/AuthService";
 
 export class UserStore {
+  user = {};
+  isAuth = false;
   constructor() {
     makeAutoObservable(this);
   }
-  user = {};
-  isAuth = false;
 
   setAuth(isAuth) {
     this.isAuth = isAuth;
@@ -30,15 +30,18 @@ export class UserStore {
       const user = await AuthService.registration(email, password);
       localStorage.setItem("token", user.data.accessToken);
       this.setAuth(true);
-      this.setUser(user);
+      this.setUser(user.data);
     } catch (e) {
       console.log(e);
     }
   }
   async logout() {
     try {
-      const user = await AuthService.logout();
+      const res = await AuthService.logout();
+      localStorage.removeItem("token");
+
       this.setAuth(false);
+
       this.setUser({});
     } catch (e) {
       console.log(e);
