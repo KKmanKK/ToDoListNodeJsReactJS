@@ -1,7 +1,7 @@
 import { Box, Tabs, Tab, TabList, TabPanels, TabPanel } from "@chakra-ui/react";
 import { Login } from "./Login";
 import { SingUp } from "./SingUp";
-export const Authenticated = () => {
+export const Authenticated = ({ getData }) => {
   return (
     <>
       <Box
@@ -21,7 +21,7 @@ export const Authenticated = () => {
           </TabList>
           <TabPanels>
             <TabPanel>
-              <Login />
+              <Login getData={getData} />
             </TabPanel>
             <TabPanel>
               <SingUp />

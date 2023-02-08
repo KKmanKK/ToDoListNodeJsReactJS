@@ -19,12 +19,15 @@ import { useState } from "react";
 import { Context } from "..";
 import { observer } from "mobx-react-lite";
 
-export const Login = observer(() => {
+export const Login = observer(({ getData }) => {
   const [show, setShow] = useState(false);
   const [password, setPassword] = useState("");
   const { userStore } = useContext(Context);
   const [email, setEmail] = useState("");
-
+  const login = async () => {
+    userStore.login(email, password);
+    getData();
+  };
   return (
     <>
       <VStack>
@@ -65,7 +68,7 @@ export const Login = observer(() => {
           m="20px 0 0 0"
           colorScheme="teal"
           size="lg"
-          onClick={() => userStore.login(email, password)}
+          onClick={login}
         >
           Аунтефикация
         </Button>

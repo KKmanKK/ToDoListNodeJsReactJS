@@ -1,9 +1,9 @@
 import React from "react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
-import { Box, Container, HStack, Text } from "@chakra-ui/react";
+import { Box, Container, HStack, Stack, Text } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
 import { IconButton } from "@chakra-ui/react";
-import { useDisclosure } from "@chakra-ui/react";
+import { useDisclosure, Progress } from "@chakra-ui/react";
 import { Modalcomponent } from "./Modal";
 import axios from "axios";
 import { useContext } from "react";
@@ -30,13 +30,13 @@ export const ListItem = ({ task, getData }) => {
       d="flex"
       textAlign="center"
       p={3}
-      w="45w"
+      w="49vw"
       m="10px 0 15px 0"
       borderRadius="lg"
       boxShadow="base"
     >
-      <HStack w="100px" d="flex" justifyContent="space-between">
-        <HStack spacing={4}>
+      <HStack d="flex" justifyContent="space-between">
+        <HStack spacing={4} w="30vh">
           <IconButton
             colorScheme="teal"
             variant="outline"
@@ -44,12 +44,25 @@ export const ListItem = ({ task, getData }) => {
             icon={<CheckIcon />}
           />
           {/* <CheckIcon cursor="pointer" /> */}
-          <Text w="40vw" textAlign="start" fontSize="20px">
+          <Text w="7em" fontSize="20px">
             {task.title}
           </Text>
         </HStack>
+        <Box>
+          <Progress
+            w="25vw"
+            colorScheme="teal"
+            hasStripe
+            value={task.prohress}
+          />
+        </Box>
         <HStack>
-          <ButtonGroup gap="2">
+          <ButtonGroup
+            gap="2"
+            alignItems="center"
+            justifyContent="center"
+            flexWrap="wrap"
+          >
             <Button colorScheme="teal" size="sm" onClick={onOpen}>
               Edit
             </Button>

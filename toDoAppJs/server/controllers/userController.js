@@ -37,7 +37,7 @@ class UserController {
       console.log(e);
     }
   }
-  async tokenRefresh() {
+  async tokenRefresh(req, res) {
     try {
       const { refreshToken } = req.cookies;
       const userData = await userService.refresh(refreshToken);
@@ -45,7 +45,7 @@ class UserController {
         maxAge: 15 * 24 * 60 * 60 * 1000,
         httpOnly: true,
       });
-      return res.status(200).json(user);
+      return res.status(200).json(userData);
     } catch (e) {
       console.log(e);
     }

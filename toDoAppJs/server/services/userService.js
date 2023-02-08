@@ -54,7 +54,8 @@ class UserService {
     if (!userData || !tokenInBd) {
       throw new Error("Пользовательн не зарегестрирован");
     }
-    const user = await User.findOne({ where: { userId: userData.id } });
+
+    const user = await User.findOne({ where: { id: userData.id } });
     const userDto = new UserDTO(user);
     const tokens = tokenService.generateToken({ ...userDto });
     await tokenService.saveToken(tokens.refreshToken, userDto.id);

@@ -15,13 +15,11 @@ export const Context = createContext({
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <ChakraProvider>
-      <Context.Provider value={{ todoStore, userStore }}>
-        <App />
-      </Context.Provider>
-    </ChakraProvider>
-  </React.StrictMode>
+  <ChakraProvider>
+    <Context.Provider value={{ todoStore, userStore }}>
+      <App />
+    </Context.Provider>
+  </ChakraProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

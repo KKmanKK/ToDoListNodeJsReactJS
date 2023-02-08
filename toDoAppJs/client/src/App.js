@@ -1,6 +1,6 @@
 import "./App.css";
 import React, { useContext } from "react";
-import { Box, Container, HStack, Text } from "@chakra-ui/react";
+import { Box, Container, HStack, Spinner } from "@chakra-ui/react";
 
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -24,6 +24,12 @@ function App() {
     }
   };
   useEffect(() => {
+    if (localStorage.getItem("token")) {
+      userStore.checkAuth();
+      getData();
+    }
+  }, []);
+  useEffect(() => {
     getData();
   }, [userStore.isAuth]);
 
@@ -31,17 +37,30 @@ function App() {
     (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
   );
 
-  if (!userStore.isAuth) {
+  if (userStore.isLoading) {
     return (
       <div className="App">
         <Container maxW="xl" centerContent>
-          <Authenticated />
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+          />
         </Container>
       </div>
     );
   }
 
-  if (userStore.isAuth) {
+  if (!userStore.isAuth) {
+    return (
+      <div className="App">
+        <Container maxW="xl" centerContent>
+          <Authenticated getData={getData} />
+        </Container>
+      </div>
+    );
   }
 
   return (
