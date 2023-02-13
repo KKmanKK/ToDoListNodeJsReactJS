@@ -6,6 +6,7 @@ import {
   Button,
   VStack,
   IconButton,
+  Text,
 } from "@chakra-ui/react";
 import { ViewIcon } from "@chakra-ui/icons";
 
@@ -28,7 +29,60 @@ export const SingUp = observer(() => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const { userStore } = useContext(Context);
 
+  const [emailDirty, setEmailDirty] = useState(false);
+  const [passwordDirty, setPasswordDirty] = useState(false);
+  const [emailError, setEmailError] = useState("Значение не может быть пустым");
+  const [passwordError, setPasswordError] = useState(
+    "Значение не может быть пустым"
+  );
+  const [comfirmPasswordDirty, setComfirmPasswordDirty] = useState(false);
+  const [comfirmPasswordError, setComfirmPasswordError] = useState(
+    "Значение не может быть пустым"
+  );
+
+  const blurHandler = (e) => {
+    switch (e.target.name) {
+      case "email":
+        setEmailDirty(true);
+        break;
+      case "password":
+        setPasswordDirty(true);
+        break;
+      case "comfirmPassword":
+        setComfirmPasswordDirty(true);
+        break;
+    }
+  };
+  const emailHandler = (e) => {
+    setEmail(e.target.value);
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!re.test(String(e.target.value).toLowerCase())) {
+      setEmailError("Некорректный emeil");
+    } else {
+      setEmailError("");
+    }
+  };
+  const passwordHandler = (e) => {
+    setPassword(e.target.value);
+    if (e.target.value.length < 3 || e.target.value.length > 12) {
+      setPasswordError("Пароль должен быть длиннее 3 и не длинее 12");
+    } else {
+      setPasswordError("");
+    }
+  };
+  const comfirmPasswordHandler = (e) => {
+    setConfirmPassword(e.target.value);
+    if (e.target.value !== password) {
+      setComfirmPasswordError("Gароли не совпадают");
+    } else {
+      setComfirmPasswordError("");
+    }
+  };
   const submitRegFrom = () => {
+    if (comfirmPasswordError || passwordError || emailError) {
+      return;
+    }
     userStore.registration(email, password);
   };
   return (
@@ -37,21 +91,25 @@ export const SingUp = observer(() => {
         <FormControl isRequired>
           <FormLabel>Почта</FormLabel>
           <Input
+            name="email"
+            onBlur={blurHandler}
             placeholder="email"
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={emailHandler}
           />
         </FormControl>
-
+        {emailDirty && emailError && <Text color="red">{emailError}</Text>}
         <FormControl id="pass" isRequired>
           <FormLabel>Пароль</FormLabel>
           <InputGroup>
             <Input
+              name="password"
+              onBlur={blurHandler}
               placeholder="Введите пароль"
               type={showPas ? "text" : "password"}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={passwordHandler}
             ></Input>
             <InputRightElement w="4.5rem">
               <IconButton
@@ -66,14 +124,19 @@ export const SingUp = observer(() => {
             </InputRightElement>
           </InputGroup>
         </FormControl>
+        {passwordDirty && passwordError && (
+          <Text color="red">{passwordError}</Text>
+        )}
         <FormControl id="pass" isRequired>
           <FormLabel>Потвржение пароля</FormLabel>
           <InputGroup>
             <Input
+              onBlur={blurHandler}
+              name="comfirmPassword"
               placeholder="Введите пароль"
               type={showPasConfirm ? "text" : "password"}
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={comfirmPasswordHandler}
             ></Input>
             <InputRightElement w="4.5rem">
               <IconButton
@@ -88,6 +151,9 @@ export const SingUp = observer(() => {
             </InputRightElement>
           </InputGroup>
         </FormControl>
+        {comfirmPasswordDirty && comfirmPasswordError && (
+          <Text color="red">{comfirmPasswordError}</Text>
+        )}
         <Button
           h="1.7em"
           m="20px 0 0 0"

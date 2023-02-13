@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { UserDTO } from "./../Dtos/UserDTO.js";
 import { tokenService } from "./tokenService.js";
 import { ApiErorr } from "../erorrs/error.js";
+
 class UserService {
   async registratin(email, password) {
     const userCandidat = await User.findOne({ where: { email } });

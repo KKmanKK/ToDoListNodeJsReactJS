@@ -1,8 +1,13 @@
+import { ApiErorr } from "../erorrs/error.js";
 import { userService } from "../services/userService.js";
-
+import { validationResult } from "express-validator/src/validation-result.js";
 class UserController {
   async registrationUser(req, res, next) {
     try {
+      const validErr = validationResult(req);
+      if (!validErr.isEmpty()) {
+        return next(ApiErorr.badRequest("Ошибка валидации", validErr.array()));
+      }
       const { email, password } = req.body;
       const user = await userService.registratin(email, password);
       res.cookie("refreshToken", user.refreshToken, {

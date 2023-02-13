@@ -18,6 +18,7 @@ import {
   SliderFilledTrack,
   SliderThumb,
   SliderMark,
+  Text,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -39,6 +40,16 @@ export const Modalcomponent = ({ mode, isOpenn, showOpen, task, getData }) => {
     title: editMode == true ? task.title : "",
     prohress: editMode == true ? task.prohress : 0,
   });
+  const [titleDirty, setTitleDirty] = useState(false);
+  const [titleError, setTitleError] = useState("Значение не может быть пустым");
+
+  const blurHandler = (e) => {
+    switch (e.target.name) {
+      case "title":
+        setTitleDirty(true);
+        break;
+    }
+  };
 
   const changeHendlerInput = (e) => {
     setData((prev) => {
@@ -47,6 +58,12 @@ export const Modalcomponent = ({ mode, isOpenn, showOpen, task, getData }) => {
         title: e.target.value,
       };
     });
+
+    if (e.target.value == "") {
+      setTitleError("Значение не может быть пустым");
+      return;
+    }
+    setTitleError("");
   };
   const changeHendlerSlider = (e) => {
     setData((prev) => {
@@ -104,11 +121,15 @@ export const Modalcomponent = ({ mode, isOpenn, showOpen, task, getData }) => {
               <FormLabel>Task Title</FormLabel>
 
               <Input
+                name="title"
+                onBlur={blurHandler}
                 placeholder="Task Title"
                 value={data.title}
                 onChange={changeHendlerInput}
               />
-
+              {titleDirty && titleError && (
+                <Text color="red">{titleError}</Text>
+              )}
               <Slider
                 mt="6vh"
                 value={data.prohress}
