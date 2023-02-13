@@ -1,7 +1,7 @@
 import { userService } from "../services/userService.js";
 
 class UserController {
-  async registrationUser(req, res) {
+  async registrationUser(req, res, next) {
     try {
       const { email, password } = req.body;
       const user = await userService.registratin(email, password);
@@ -11,10 +11,10 @@ class UserController {
       });
       return res.status(200).json(user);
     } catch (e) {
-      console.log(e);
+      next(e);
     }
   }
-  async loginUser(req, res) {
+  async loginUser(req, res, next) {
     try {
       const { email, password } = req.body;
       const user = await userService.login(email, password);
@@ -24,10 +24,10 @@ class UserController {
       });
       return res.status(200).json(user);
     } catch (e) {
-      console.log(e);
+      next(e);
     }
   }
-  async logoutUser(req, res) {
+  async logoutUser(req, res, next) {
     try {
       const { refreshToken } = req.cookies;
       const token = await userService.logout(refreshToken);
@@ -37,7 +37,7 @@ class UserController {
       console.log(e);
     }
   }
-  async tokenRefresh(req, res) {
+  async tokenRefresh(req, res, next) {
     try {
       const { refreshToken } = req.cookies;
       const userData = await userService.refresh(refreshToken);

@@ -1,13 +1,14 @@
+import { ApiErorr } from "../erorrs/error.js";
 import { Todo } from "../models.js";
 
 class TodoService {
   async showTodoByEmail(userEmail) {
     if (!userEmail) {
-      throw new Error("Отсутствует почта");
+      throw new ApiErorr.badRequest("Отсутствует почта");
     }
     const todoData = await Todo.findAll({ where: { user_email: userEmail } });
     if (!todoData) {
-      throw new Error("Отсутствует почта");
+      throw ApiErorr.badRequest("Отсутствует почта");
     }
     return todoData;
   }
@@ -22,7 +23,7 @@ class TodoService {
   async update(id, title, prohress) {
     const todoCand = await Todo.findOne({ where: { id } });
     if (!todoCand) {
-      throw new Error("Такой почты не существует");
+      throw ApiErorr.badRequest("Такой почты не существует");
     }
     todoCand.title = title;
     todoCand.prohress = prohress;

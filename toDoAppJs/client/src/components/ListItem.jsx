@@ -50,7 +50,7 @@ export const ListItem = ({ task, getData }) => {
         </HStack>
         <Box>
           <Progress
-            w="25vw"
+            w="20vw"
             colorScheme="teal"
             hasStripe
             value={task.prohress}

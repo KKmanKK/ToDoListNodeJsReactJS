@@ -1,22 +1,23 @@
+import { ApiErorr } from "../erorrs/error.js";
 import { tokenService } from "./../services/tokenService.js";
 export const authMiddleware = (req, res, next) => {
   try {
     const authorizationHeader = req.headers.authorization;
     if (!authorizationHeader) {
-      throw new Error("Пользователь не автаризован");
+      return next(ApiErorr.unAuthError());
     }
     const accessToken = authorizationHeader.split(" ")[1];
     if (!accessToken) {
-      throw new Error("Пользователь не автаризован");
+      return next(ApiErorr.unAuthError());
     }
     const userData = tokenService.accessTokenValidation(accessToken);
 
     if (!userData) {
-      throw new Error("Пользователь не автаризован");
+      return next(ApiErorr.unAuthError());
     }
     req.user = userData;
     next();
   } catch (e) {
-    console.log(e);
+    return next(ApiErorr.unAuthError);
   }
 };

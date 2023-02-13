@@ -5,6 +5,7 @@ import cors from "cors";
 import { sequelize } from "./bd.js";
 import { todoRouter } from "./routes/todoRouter.js";
 import { userRouter } from "./routes/userRouter.js";
+import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,6 +19,7 @@ app.use(
 app.use(cookieParser());
 app.use("/api", todoRouter);
 app.use("/api", userRouter);
+app.use(errorMiddleware);
 const start = () => {
   try {
     sequelize.sync();

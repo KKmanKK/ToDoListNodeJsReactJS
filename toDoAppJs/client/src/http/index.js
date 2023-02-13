@@ -10,3 +10,23 @@ $api.interceptors.request.use((config) => {
   config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
   return config;
 });
+
+$api.interceptors.response.use(
+  (config) => {
+    return config;
+  },
+  async (err) => {
+    try {
+      const originReq = err.config;
+      if (err.response.status == 401) {
+        const res = await axios.get(`${API_URL}/refresh`, {
+          withCredentials: true,
+        });
+        localStorage.setItem("token", res.data.accessToken);
+        return $api.request(originReq);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+);
