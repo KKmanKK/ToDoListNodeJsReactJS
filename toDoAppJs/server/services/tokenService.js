@@ -5,7 +5,7 @@ dotenv.config();
 class TokenService {
   generateToken(payload) {
     const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET_KEY, {
-      expiresIn: "15s",
+      expiresIn: "15h",
     });
 
     const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET_KEY, {

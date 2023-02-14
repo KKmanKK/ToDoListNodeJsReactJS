@@ -20,6 +20,7 @@ import { useState } from "react";
 import { useContext } from "react";
 import { Context } from "..";
 import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 
 export const SingUp = observer(() => {
   const [showPas, setShowPas] = useState(false);
@@ -28,7 +29,7 @@ export const SingUp = observer(() => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { userStore } = useContext(Context);
-
+  const [disabled, setDisabled] = useState(false);
   const [emailDirty, setEmailDirty] = useState(false);
   const [passwordDirty, setPasswordDirty] = useState(false);
   const [emailError, setEmailError] = useState("Значение не может быть пустым");
@@ -74,15 +75,19 @@ export const SingUp = observer(() => {
   const comfirmPasswordHandler = (e) => {
     setConfirmPassword(e.target.value);
     if (e.target.value !== password) {
-      setComfirmPasswordError("Gароли не совпадают");
+      setComfirmPasswordError("Пароли не совпадают");
     } else {
       setComfirmPasswordError("");
     }
   };
-  const submitRegFrom = () => {
-    if (comfirmPasswordError || passwordError || emailError) {
-      return;
+  useEffect(() => {
+    if (comfirmPasswordError == "" && passwordError == "" && emailError == "") {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
     }
+  }, [comfirmPasswordError, passwordError, emailError]);
+  const submitRegFrom = () => {
     userStore.registration(email, password);
   };
   return (
@@ -158,6 +163,7 @@ export const SingUp = observer(() => {
           h="1.7em"
           m="20px 0 0 0"
           colorScheme="teal"
+          isDisabled={disabled}
           size="lg"
           onClick={submitRegFrom}
         >

@@ -9,7 +9,7 @@ class UserService {
   async registratin(email, password) {
     const userCandidat = await User.findOne({ where: { email } });
     if (userCandidat) {
-      throw new ApiErorr.badRequest("Неверная почта");
+      throw ApiErorr.badRequest("Неверная почта");
     }
     const hashPass = bcrypt.hashSync(password, 4);
     const user = await User.create({ email, password: hashPass });

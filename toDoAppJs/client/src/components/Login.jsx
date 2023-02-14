@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Input,
   InputGroup,
@@ -24,9 +24,21 @@ export const Login = observer(({ getData }) => {
   const [password, setPassword] = useState("");
   const { userStore } = useContext(Context);
   const [email, setEmail] = useState("");
+  const [disabled, setDisabled] = useState(false);
+
+  useEffect(() => {
+    if (password == "" || email == "") {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+  }, [password, email]);
   const login = async () => {
     userStore.login(email, password);
     getData();
+  };
+  const emailHandler = (e) => {
+    setEmail(e.target.value);
   };
   return (
     <>
@@ -37,7 +49,7 @@ export const Login = observer(({ getData }) => {
             placeholder="email"
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={emailHandler}
           />
         </FormControl>
 
@@ -68,6 +80,7 @@ export const Login = observer(({ getData }) => {
           m="20px 0 0 0"
           colorScheme="teal"
           size="lg"
+          isDisabled={disabled}
           onClick={login}
         >
           Аунтефикация

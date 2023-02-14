@@ -34,7 +34,6 @@ export const Modalcomponent = ({ mode, isOpenn, showOpen, task, getData }) => {
   };
 
   const editMode = mode === "edit" ? true : false;
-
   const [data, setData] = useState({
     user_email: userStore.user.user.email ?? "TestTodo@mail.ru",
     title: editMode == true ? task.title : "",
@@ -42,7 +41,7 @@ export const Modalcomponent = ({ mode, isOpenn, showOpen, task, getData }) => {
   });
   const [titleDirty, setTitleDirty] = useState(false);
   const [titleError, setTitleError] = useState("Значение не может быть пустым");
-
+  const [disabled, setDisabled] = useState(false);
   const blurHandler = (e) => {
     switch (e.target.name) {
       case "title":
@@ -50,7 +49,13 @@ export const Modalcomponent = ({ mode, isOpenn, showOpen, task, getData }) => {
         break;
     }
   };
-
+  useEffect(() => {
+    if (titleError == "") {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, []);
   const changeHendlerInput = (e) => {
     setData((prev) => {
       return {
@@ -58,9 +63,10 @@ export const Modalcomponent = ({ mode, isOpenn, showOpen, task, getData }) => {
         title: e.target.value,
       };
     });
-
+    setDisabled(false);
     if (e.target.value == "") {
       setTitleError("Значение не может быть пустым");
+      setDisabled(true);
       return;
     }
     setTitleError("");
@@ -76,6 +82,7 @@ export const Modalcomponent = ({ mode, isOpenn, showOpen, task, getData }) => {
 
   const createTask = async (e) => {
     e.preventDefault();
+
     try {
       const res = await todoStore.create(
         data.user_email,
@@ -169,6 +176,7 @@ export const Modalcomponent = ({ mode, isOpenn, showOpen, task, getData }) => {
               colorScheme="teal"
               size="sm"
               mr={3}
+              isDisabled={disabled}
               onClick={editMode ? updataTask : createTask}
             >
               {editMode ? "Edit" : "Add New"}
